@@ -1,0 +1,33 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python cache
+.pytest_cache/
+
+# GIS temporary outputs
+*.gpkg
+*.shp
+*.dbf
+*.prj
+
+# Node (future frontend)
+node_modules/
+
+# Build
+dist/
+build/
