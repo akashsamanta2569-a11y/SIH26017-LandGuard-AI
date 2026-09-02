@@ -1,13 +1,18 @@
 from fastapi import FastAPI
 from app.core.config import settings
+from app.routers.dashboard import router as dashboard_router
 from app.routers.gis import router as gis_router
+from app.routers.heatmap import router as heatmap_router
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.API_VERSION,
     description="LandGuard AI Backend for Smart India Hackathon 2026"
 )
 
+app.include_router(dashboard_router)
 app.include_router(gis_router)
+app.include_router(heatmap_router)
 
 @app.get("/")
 def root():

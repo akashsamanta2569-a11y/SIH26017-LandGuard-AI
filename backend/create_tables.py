@@ -3,6 +3,7 @@ from app.models.base import Base
 
 # Import models here
 from app.models.district import District
+from app.models.project import Project
 
 print("Creating LandGuard AI tables...")
 
