@@ -4,51 +4,76 @@ from app.core.database import engine
 
 def generate_heatmap():
     """
-    Calculate project statistics and AI risk score for every district.
+    Generate AI Heatmap using Projects + AI Alerts.
     Returns GeoJSON FeatureCollection.
     """
 
     query = text("""
         SELECT json_build_object(
             'type', 'FeatureCollection',
+
             'features', json_agg(
+
                 json_build_object(
                     'type', 'Feature',
-                    'geometry', ST_AsGeoJSON(d.boundary)::json,
-                    'properties', json_build_object(
+
+                    'geometry',
+                    ST_AsGeoJSON(d.boundary)::json,
+
+                    'properties',
+                    json_build_object(
+
                         'district_name', d.district_name,
                         'state', d.state,
 
-                        'project_count', COALESCE(stats.project_count, 0),
-                        'ongoing_projects', COALESCE(stats.ongoing_projects, 0),
-                        'planned_projects', COALESCE(stats.planned_projects, 0),
-                        'total_cost', COALESCE(stats.total_cost, 0),
+                        'project_count',
+                        COALESCE(project_stats.project_count,0),
 
-                        -- AI Risk Score
+                        'ongoing_projects',
+                        COALESCE(project_stats.ongoing_projects,0),
+
+                        'planned_projects',
+                        COALESCE(project_stats.planned_projects,0),
+
+                        'alert_count',
+                        COALESCE(alert_stats.alert_count,0),
+
+                        'total_cost',
+                        COALESCE(project_stats.total_cost,0),
+
                         'risk_score',
+
                         ROUND(
                             LEAST(
                                 100,
-                                COALESCE(stats.project_count, 0) * 15 +
-                                COALESCE(stats.ongoing_projects, 0) * 10 +
-                                COALESCE(stats.total_cost, 0) / 150
+
+                                COALESCE(project_stats.project_count,0) * 15 +
+
+                                COALESCE(project_stats.ongoing_projects,0) * 10 +
+
+                                COALESCE(project_stats.total_cost,0) / 150 +
+
+                                COALESCE(alert_stats.alert_points,0)
+
                             )::numeric,
                             2
                         ),
 
-                        -- AI Risk Level
                         'risk_level',
+
                         CASE
                             WHEN (
-                                COALESCE(stats.project_count, 0) * 15 +
-                                COALESCE(stats.ongoing_projects, 0) * 10 +
-                                COALESCE(stats.total_cost, 0) / 150
+                                COALESCE(project_stats.project_count,0) * 15 +
+                                COALESCE(project_stats.ongoing_projects,0) * 10 +
+                                COALESCE(project_stats.total_cost,0) / 150 +
+                                COALESCE(alert_stats.alert_points,0)
                             ) >= 70 THEN 'High'
 
                             WHEN (
-                                COALESCE(stats.project_count, 0) * 15 +
-                                COALESCE(stats.ongoing_projects, 0) * 10 +
-                                COALESCE(stats.total_cost, 0) / 150
+                                COALESCE(project_stats.project_count,0) * 15 +
+                                COALESCE(project_stats.ongoing_projects,0) * 10 +
+                                COALESCE(project_stats.total_cost,0) / 150 +
+                                COALESCE(alert_stats.alert_points,0)
                             ) >= 35 THEN 'Medium'
 
                             ELSE 'Low'
@@ -63,18 +88,19 @@ def generate_heatmap():
         LEFT JOIN (
             SELECT
                 district_name,
+
                 COUNT(*) AS project_count,
 
                 SUM(
                     CASE
-                        WHEN status = 'Ongoing' THEN 1
+                        WHEN status='Ongoing' THEN 1
                         ELSE 0
                     END
                 ) AS ongoing_projects,
 
                 SUM(
                     CASE
-                        WHEN status = 'Planned' THEN 1
+                        WHEN status='Planned' THEN 1
                         ELSE 0
                     END
                 ) AS planned_projects,
@@ -82,10 +108,37 @@ def generate_heatmap():
                 SUM(estimated_cost) AS total_cost
 
             FROM projects
+
             GROUP BY district_name
 
-        ) stats
-        ON d.district_name = stats.district_name;
+        ) project_stats
+
+        ON d.district_name = project_stats.district_name
+
+        LEFT JOIN (
+            SELECT
+                district_name,
+
+                COUNT(*) AS alert_count,
+
+                SUM(
+                    CASE
+                        WHEN severity='High' THEN 25
+                        WHEN severity='Medium' THEN 15
+                        WHEN severity='Low' THEN 8
+                        ELSE 0
+                    END
+                ) AS alert_points
+
+            FROM alerts
+
+            WHERE status != 'Resolved'
+
+            GROUP BY district_name
+
+        ) alert_stats
+
+        ON d.district_name = alert_stats.district_name;
     """)
 
     with engine.connect() as conn:

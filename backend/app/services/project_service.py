@@ -2,31 +2,34 @@ from sqlalchemy import text
 from app.core.database import engine
 
 
-def get_projects_with_detected_district():
+def get_project_markers():
     """
-    Detect district using PostGIS ST_Contains().
+    Returns all infrastructure projects as GeoJSON Points.
     """
 
     query = text("""
-        SELECT
-            p.project_name,
-            p.department,
-            p.status,
-            p.estimated_cost,
+        SELECT json_build_object(
+            'type', 'FeatureCollection',
+            'features', json_agg(
+                json_build_object(
+                    'type', 'Feature',
 
-            d.district_name AS detected_district,
+                    'geometry', ST_AsGeoJSON(location)::json,
 
-            ST_Y(p.location::geometry) AS latitude,
-            ST_X(p.location::geometry) AS longitude
+                    'properties', json_build_object(
+                        'id', id,
+                        'project_name', project_name,
+                        'department', department,
+                        'district_name', district_name,
+                        'status', status,
+                        'estimated_cost', estimated_cost
+                    )
+                )
+            )
+        ) AS geojson
 
-        FROM projects p
-        JOIN districts d
-          ON ST_Contains(
-                d.boundary::geometry,
-                p.location::geometry
-             );
+        FROM projects;
     """)
 
     with engine.connect() as conn:
-        result = conn.execute(query)
-        return [dict(row._mapping) for row in result]
+        return conn.execute(query).scalar()
