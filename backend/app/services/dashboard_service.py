@@ -9,28 +9,22 @@ def get_dashboard_summary():
 
     query = text("""
         WITH district_stats AS (
-
             SELECT
                 d.district_name,
-
                 COUNT(p.id) AS project_count,
-
                 SUM(
                     CASE
                         WHEN p.status='Ongoing' THEN 1
                         ELSE 0
                     END
                 ) AS ongoing_projects,
-
                 SUM(
                     CASE
                         WHEN p.status='Planned' THEN 1
                         ELSE 0
                     END
                 ) AS planned_projects,
-
                 SUM(p.estimated_cost) AS total_cost,
-
                 LEAST(
                     100,
                     COUNT(p.id)*15 +
@@ -42,17 +36,12 @@ def get_dashboard_summary():
                     ) +
                     COALESCE(SUM(p.estimated_cost),0)/150
                 ) AS risk_score
-
             FROM districts d
-
             LEFT JOIN projects p
             ON d.district_name = p.district_name
-
             GROUP BY d.district_name
         )
-
         SELECT json_build_object(
-
             'total_projects',
             (SELECT COUNT(*) FROM projects),
 
@@ -73,67 +62,79 @@ def get_dashboard_summary():
             (SELECT COUNT(*) FROM district_stats WHERE risk_score<35),
 
             'total_estimated_cost',
-            (SELECT COALESCE(SUM(estimated_cost),0) FROM projects)
+            (SELECT COALESCE(SUM(estimated_cost),0) FROM projects),
+
+            'active_alerts',
+            (SELECT COUNT(*) FROM alerts WHERE status='Active'),
+
+            'high_severity_alerts',
+            (SELECT COUNT(*) FROM alerts WHERE severity='High' AND status='Active'),
+
+            'medium_severity_alerts',
+            (SELECT COUNT(*) FROM alerts WHERE severity='Medium' AND status='Active'),
+
+            'low_severity_alerts',
+            (SELECT COUNT(*) FROM alerts WHERE severity='Low' AND status='Active')
 
         ) AS summary;
     """)
     
-
     with engine.connect() as conn:
-        return conn.execute(query).scalar()
-def get_department_chart():
+        summary = conn.execute(query).scalar()
+        
+        summary["total_alerts"] = (
+            summary["high_severity_alerts"]
+            + summary["medium_severity_alerts"]
+            + summary["low_severity_alerts"]
+        )
+        
+        return summary
 
+
+def get_department_chart():
     query = text("""
         SELECT
             department,
             COUNT(*) AS project_count,
             SUM(estimated_cost) AS total_budget
-
         FROM projects
-
         GROUP BY department
-
         ORDER BY project_count DESC;
     """)
 
     with engine.connect() as conn:
         return [dict(row._mapping) for row in conn.execute(query)]
 
-def get_status_chart():
 
+def get_status_chart():
     query = text("""
         SELECT
             status,
             COUNT(*) AS project_count
-
         FROM projects
-
         GROUP BY status;
     """)
 
     with engine.connect() as conn:
         return [dict(row._mapping) for row in conn.execute(query)]
 
-def get_cost_by_district():
 
+def get_cost_by_district():
     query = text("""
         SELECT
             district_name,
             SUM(estimated_cost) AS total_budget,
             COUNT(*) AS project_count
-
         FROM projects
-
         GROUP BY district_name
-
         ORDER BY total_budget DESC;
     """)
 
     with engine.connect() as conn:
         return [dict(row._mapping) for row in conn.execute(query)]
 
-def get_top_projects(limit: int = 10):
 
+def get_top_projects(limit: int = 10):
     query = text("""
         SELECT
             project_name,
@@ -141,11 +142,8 @@ def get_top_projects(limit: int = 10):
             district_name,
             estimated_cost,
             status
-
         FROM projects
-
         ORDER BY estimated_cost DESC
-
         LIMIT :limit;
     """)
 
@@ -160,11 +158,8 @@ def get_top_risk_districts(limit=10):
     query = text("""
         SELECT
             d.district_name,
-
             COUNT(p.id) AS project_count,
-
             COALESCE(SUM(p.estimated_cost),0) AS total_cost,
-
             ROUND(
                 LEAST(
                     100,
@@ -179,7 +174,6 @@ def get_top_risk_districts(limit=10):
                 )::numeric,
                 2
             ) AS risk_score,
-
             CASE
                 WHEN (
                     COUNT(p.id)*15 +
@@ -205,16 +199,11 @@ def get_top_risk_districts(limit=10):
 
                 ELSE 'Low'
             END AS risk_level
-
         FROM districts d
-
         LEFT JOIN projects p
             ON d.district_name = p.district_name
-
         GROUP BY d.district_name
-
         ORDER BY risk_score DESC
-
         LIMIT :limit;
     """)
 

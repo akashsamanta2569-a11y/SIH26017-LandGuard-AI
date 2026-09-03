@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-
+from app.schemas.dashboard import DashboardSummaryResponse
 from app.services.dashboard_service import (
     get_dashboard_summary,
     get_department_chart,
@@ -13,7 +13,11 @@ router = APIRouter(
     tags=["Dashboard"]
 )
 
-@router.get("/summary")
+@router.get(
+    "/summary",
+    response_model=DashboardSummaryResponse,
+    summary="Dashboard Summary Analytics"
+)
 def dashboard_summary():
     return get_dashboard_summary()
 @router.get("/department-chart")

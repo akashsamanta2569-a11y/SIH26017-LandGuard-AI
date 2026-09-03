@@ -4,6 +4,8 @@ from uuid import uuid4
 
 from app.core.database import SessionLocal
 from app.models.alert import Alert
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
 
 # Project root
 ROOT_DIR = Path(__file__).resolve().parents[3]
@@ -25,13 +27,18 @@ def seed_alerts():
         reader = csv.DictReader(file)
 
         for row in reader:
+            latitude = float(row["latitude"])
+            longitude = float(row["longitude"])
+
             alert = Alert(
                 id=uuid4(),
                 district_name=row["district_name"],
+                latitude=latitude,
+                longitude=longitude,
+                # ✅ Create PostGIS POINT geometry
+                location=from_shape(Point(longitude, latitude), srid=4326),
                 alert_type=row["alert_type"],
                 severity=row["severity"],
-                latitude=float(row["latitude"]),
-                longitude=float(row["longitude"]),
                 confidence=float(row["confidence"]),
                 source=row["source"],
                 status=row["status"],

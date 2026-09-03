@@ -1,5 +1,6 @@
 from app.core.database import engine
 from app.models.base import Base
+from app.models.prediction_history import PredictionHistory
 
 # Import models here
 from app.models.district import District

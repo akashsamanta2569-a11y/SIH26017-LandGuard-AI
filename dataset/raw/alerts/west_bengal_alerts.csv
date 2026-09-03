@@ -1,0 +1,11 @@
+district_name,alert_type,severity,latitude,longitude,confidence,source,status
+North 24 Parganas,Illegal Construction,High,22.7285,88.4850,96.5,Satellite,Active
+North 24 Parganas,Land Encroachment,Medium,22.7341,88.4703,88.2,Drone,Active
+Kolkata,Illegal Construction,High,22.5728,88.3645,98.1,Satellite,Investigating
+Hooghly,River Encroachment,Medium,22.8922,88.3904,84.6,Satellite,Active
+Nadia,Wetland Encroachment,Low,22.9785,88.4372,72.8,Survey,Resolved
+East Medinipur,Coastal Encroachment,High,21.6280,87.5091,94.7,Satellite,Active
+Howrah,Unauthorized Mining,Medium,22.5952,88.2634,83.3,Drone,Investigating
+South 24 Parganas,Mangrove Damage,High,21.9495,88.7604,97.4,Satellite,Active
+Birbhum,Forest Encroachment,Medium,23.8400,87.6180,81.5,Survey,Active
+Murshidabad,Riverbank Occupation,Low,24.1805,88.2718,68.4,Survey,Resolved

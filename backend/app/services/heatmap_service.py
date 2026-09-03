@@ -26,57 +26,43 @@ def generate_heatmap():
                         'district_name', d.district_name,
                         'state', d.state,
 
-                        'project_count',
-                        COALESCE(project_stats.project_count,0),
+                        'project_count', COALESCE(project_stats.project_count,0),
+                        'ongoing_projects', COALESCE(project_stats.ongoing_projects,0),
+                        'planned_projects', COALESCE(project_stats.planned_projects,0),
+                        'total_cost', COALESCE(project_stats.total_cost,0),
 
-                        'ongoing_projects',
-                        COALESCE(project_stats.ongoing_projects,0),
-
-                        'planned_projects',
-                        COALESCE(project_stats.planned_projects,0),
-
-                        'alert_count',
-                        COALESCE(alert_stats.alert_count,0),
-
-                        'total_cost',
-                        COALESCE(project_stats.total_cost,0),
-
+                        'alert_count', COALESCE(alert_stats.alert_count,0),
+                        'alert_points', COALESCE(alert_stats.alert_points,0),
+                        'active_alerts', COALESCE(alert_stats.alert_count,0),
                         'risk_score',
-
-                        ROUND(
-                            LEAST(
-                                100,
-
-                                COALESCE(project_stats.project_count,0) * 15 +
-
-                                COALESCE(project_stats.ongoing_projects,0) * 10 +
-
-                                COALESCE(project_stats.total_cost,0) / 150 +
-
-                                COALESCE(alert_stats.alert_points,0)
-
-                            )::numeric,
-                            2
+                        LEAST(
+                            100,
+                            (
+                                COALESCE(project_stats.project_count,0) * 8
+                                + COALESCE(project_stats.ongoing_projects,0) * 5
+                                + COALESCE(project_stats.total_cost,0) / 250
+                                + COALESCE(alert_stats.alert_points,0)
+                            )
                         ),
 
                         'risk_level',
-
                         CASE
                             WHEN (
-                                COALESCE(project_stats.project_count,0) * 15 +
-                                COALESCE(project_stats.ongoing_projects,0) * 10 +
-                                COALESCE(project_stats.total_cost,0) / 150 +
+                                COALESCE(project_stats.project_count,0) * 8 +
+                                COALESCE(project_stats.ongoing_projects,0) * 5 +
+                                COALESCE(project_stats.total_cost,0) / 250 +
                                 COALESCE(alert_stats.alert_points,0)
-                            ) >= 70 THEN 'High'
+                            ) >= 75 THEN 'High'
 
                             WHEN (
-                                COALESCE(project_stats.project_count,0) * 15 +
-                                COALESCE(project_stats.ongoing_projects,0) * 10 +
-                                COALESCE(project_stats.total_cost,0) / 150 +
+                                COALESCE(project_stats.project_count,0) * 8 +
+                                COALESCE(project_stats.ongoing_projects,0) * 5 +
+                                COALESCE(project_stats.total_cost,0) / 250 +
                                 COALESCE(alert_stats.alert_points,0)
-                            ) >= 35 THEN 'Medium'
+                            ) >= 40 THEN 'Medium'
 
                             ELSE 'Low'
+
                         END
                     )
                 )
