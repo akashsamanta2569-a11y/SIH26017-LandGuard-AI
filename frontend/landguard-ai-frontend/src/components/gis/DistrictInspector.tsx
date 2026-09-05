@@ -28,7 +28,7 @@ export default function DistrictInspector({
 
   return (
     <aside
-      className="relative w-full lg:w-[380px] rounded-3xl p-5 sm:p-6 flex flex-col gap-5 select-none transition-all duration-300"
+      className="relative w-full lg:w-[380px] lg:sticky lg:top-6 self-start rounded-3xl p-5 sm:p-6 flex flex-col gap-5 select-none transition-all duration-300 max-h-[720px] overflow-y-auto custom-scrollbar"
       style={{
         background: "rgba(17, 24, 39, 0.82)",
         backdropFilter: "blur(24px)",
@@ -69,6 +69,18 @@ export default function DistrictInspector({
           from {
             width: 0%;
           }
+        }
+        /* Optional: Clean scrollbar styling for the new scrollable area */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(15, 23, 42, 0.5);
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(51, 65, 85, 0.8);
+          border-radius: 4px;
         }
       `}</style>
 

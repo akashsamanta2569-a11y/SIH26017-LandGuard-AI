@@ -190,7 +190,7 @@ export default function LayerControlPanel({
 
   return (
     <aside
-      className="relative w-full lg:w-[340px] rounded-3xl p-5 sm:p-5.5 flex flex-col gap-4.5 select-none transition-all duration-300 lg:sticky lg:top-6 overflow-hidden"
+      className="relative w-full lg:w-[340px] lg:sticky lg:top-6 self-start rounded-3xl p-5 sm:p-5.5 flex flex-col gap-4.5 select-none transition-all duration-300 overflow-hidden"
       style={{
         background: "rgba(17, 24, 39, 0.84)",
         backdropFilter: "blur(24px)",

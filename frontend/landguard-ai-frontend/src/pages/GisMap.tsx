@@ -6,7 +6,7 @@ import TimelineComparison from "../components/gis/TimelineComparison";
 
 export default function GisMap() {
   return (
-    <div className="relative max-w-[1700px] mx-auto space-y-6 pb-12 fade-up select-none">
+    <div className="relative w-full max-w-screen-2xl mx-auto px-4 lg:px-6 space-y-6 pb-12 fade-up select-none">
       {/* ── Background: Two Radial Emerald Glows + One Teal Glow ── */}
       <div
         className="pointer-events-none absolute -top-12 left-1/4 w-[650px] h-[650px] rounded-full opacity-20 -z-10"
@@ -36,25 +36,25 @@ export default function GisMap() {
       </div>
 
       {/* ── 2. Responsive 12-Column Workstation Grid ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 items-start">
-        {/* CENTER COLUMN: GISMapCanvas (Desktop 6 cols, Tablet full-width first, Mobile first) */}
-        <div className="order-1 md:col-span-2 lg:order-2 lg:col-span-6 w-full self-start">
-          <GISMapCanvas />
-        </div>
-
-        {/* LEFT COLUMN: LayerControlPanel (Desktop 3 cols sticky, Tablet stacked left, Mobile second) */}
-        <div className="order-2 md:col-span-1 lg:order-1 lg:col-span-3 w-full lg:sticky lg:top-6 self-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        {/* LEFT COLUMN: LayerControlPanel */}
+        <div className="order-2 lg:col-span-3 w-full min-w-0">
           <LayerControlPanel />
         </div>
 
-        {/* RIGHT COLUMN: DistrictInspector (Desktop 3 cols sticky, Tablet stacked right, Mobile third) */}
-        <div className="order-3 md:col-span-1 lg:order-3 lg:col-span-3 w-full lg:sticky lg:top-6 self-start">
+        {/* CENTER COLUMN: GIS Map Canvas */}
+        <div className="order-1 lg:col-span-6 w-full min-w-0 flex flex-col h-full">
+          <GISMapCanvas />
+        </div>
+
+        {/* RIGHT COLUMN: DistrictInspector */}
+        <div className="order-3 lg:col-span-3 w-full min-w-0">
           <DistrictInspector />
         </div>
       </div>
 
       {/* ── 3. Full-Width Satellite Timeline Comparison ── */}
-      <div className="w-full">
+      <div className="w-full -mt-2 lg:mt-0">
         <TimelineComparison />
       </div>
     </div>
