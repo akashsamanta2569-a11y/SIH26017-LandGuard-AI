@@ -29,7 +29,6 @@ const GlassCard: React.FC<GlassCardProps> = ({
   minHeight = 340,
 }) => {
   const [hovered, setHovered] = useState(false);
-  const glowAlpha = hovered ? "0.22" : "0.08";
   const borderAlpha = hovered ? "0.38" : "0.08";
 
   return (

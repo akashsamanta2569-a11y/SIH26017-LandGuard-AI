@@ -54,23 +54,51 @@ body {
 
 /* ── Sidebar animations ──────────────────────────────────────────────────── */
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.75); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
 }
 
 @keyframes glow-ring {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.55); }
-  50%       { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
 }
 
 @keyframes shimmer-badge {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
 }
 
 @keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .sidebar-nav-item {
@@ -92,6 +120,7 @@ body {
     opacity: 0;
     transform: translateY(14px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -102,6 +131,7 @@ body {
   from {
     background-position: 200% center;
   }
+
   to {
     background-position: -200% center;
   }
@@ -111,6 +141,7 @@ body {
   from {
     background-position: 0 0;
   }
+
   to {
     background-position: 60px 60px;
   }
@@ -121,6 +152,13 @@ body {
 }
 
 .shimmer-text {
+  background: linear-gradient(90deg,
+      #10b981,
+      #34d399,
+      #14b8a6,
+      #10b981);
+  background-size: 220% auto;
+  .shimmer-text {
   background: linear-gradient(
     90deg,
     #10b981,
@@ -129,32 +167,59 @@ body {
     #10b981
   );
   background-size: 220% auto;
+
+  background-clip: text;
   -webkit-background-clip: text;
+
+  color: transparent;
   -webkit-text-fill-color: transparent;
+
+  animation: shimmer 6s linear infinite;
+}
   animation: shimmer 6s linear infinite;
 }
 
 .grid-overlay {
   background-image:
-    linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px);
+    linear-gradient(rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
   background-size: 40px 40px;
   animation: grid-shift 12s linear infinite;
 }
+
 @keyframes scanline {
   0% {
     transform: translateY(-10px);
     opacity: 0;
   }
+
   10% {
     opacity: 1;
   }
+
   50% {
     transform: translateY(230px);
     opacity: 1;
   }
+
   100% {
     transform: translateY(430px);
     opacity: 0;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-out forwards;
 }

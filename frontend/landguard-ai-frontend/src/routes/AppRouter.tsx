@@ -8,7 +8,7 @@ import Alerts from "../pages/Alerts";
 import PredictionHistory from "../pages/PredictionHistory";
 import GisMap from "../pages/GisMap";
 import Projects from "../pages/Projects";
-import AIDetection from "../pages/AIDetection";
+import Prediction from "../pages/Prediction";
 
 export default function AppRouter() {
   return (
@@ -16,12 +16,12 @@ export default function AppRouter() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/heatmap" element={<Heatmap />} />
-          <Route path="/alerts" element={<Alerts />} />
-          <Route path="/prediction" element={<AIDetection />} />
-          <Route path="/history" element={<PredictionHistory />} />
           <Route path="/gis" element={<GisMap />} />
-          <Route path="/prediction" element={<AIDetection />} />
+          <Route path="/heatmap" element={<Heatmap />} />
+          <Route path="/prediction" element={<Prediction />} />
+          <Route path="/history" element={<PredictionHistory />} />
+          <Route path="/prediction-history" element={<PredictionHistory />} />
+          <Route path="/alerts" element={<Alerts />} />
           <Route path="/projects" element={<Projects />} />
         </Route>
       </Routes>

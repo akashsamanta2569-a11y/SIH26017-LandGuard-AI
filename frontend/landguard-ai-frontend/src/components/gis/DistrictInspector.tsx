@@ -10,9 +10,9 @@ import {
   RiseOutlined,
   BankOutlined,
   ApartmentOutlined,
-  RadarChartOutlined,
+ 
   ArrowUpOutlined,
-  InfoCircleOutlined,
+  
 } from "@ant-design/icons";
 
 interface DistrictInspectorProps {
@@ -22,7 +22,7 @@ interface DistrictInspectorProps {
 
 export default function DistrictInspector({
   districtName = "North 24 Parganas",
-  onClose,
+  
 }: DistrictInspectorProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "infra">("overview");
 

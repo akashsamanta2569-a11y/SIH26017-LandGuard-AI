@@ -145,7 +145,6 @@ const KPICard: React.FC<{ card: KPICardData; index: number }> = ({ card, index }
         transform: hovered ? "scale(1.025) translateY(-4px)" : "scale(1) translateY(0)",
       }}
       className="relative flex flex-col justify-between rounded-[20px] p-[18px] transition-all duration-300 ease-out cursor-default overflow-hidden group select-none"
-      style2={{ height: 176 }}
     >
       {/* Top-right ambient glow */}
       <div

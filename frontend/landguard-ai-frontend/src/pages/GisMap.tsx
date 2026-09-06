@@ -5,6 +5,7 @@ import DistrictInspector from "../components/gis/DistrictInspector";
 import TimelineComparison from "../components/gis/TimelineComparison";
 
 export default function GisMap() {
+  
   return (
     <div className="relative w-full max-w-screen-2xl mx-auto px-4 lg:px-6 space-y-6 pb-12 fade-up select-none">
       {/* ── Background: Two Radial Emerald Glows + One Teal Glow ── */}

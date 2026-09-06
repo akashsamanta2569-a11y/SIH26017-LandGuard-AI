@@ -3,7 +3,6 @@ import {
   CalendarOutlined,
   SwapOutlined,
   EyeOutlined,
-  RadarChartOutlined,
   SafetyCertificateOutlined,
   RiseOutlined,
   BuildOutlined,
@@ -67,7 +66,6 @@ const TIMELINE_POINTS: TimelinePoint[] = [
 export default function TimelineComparison() {
   const [activeDateIndex, setActiveDateIndex] = useState<number>(3); // Default to Sep 2026 (current)
   const [sliderPos, setSliderPos] = useState<number>(50); // Split percentage 0..100
-  const [isComparing, setIsComparing] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<"split" | "before" | "after">("split");
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
