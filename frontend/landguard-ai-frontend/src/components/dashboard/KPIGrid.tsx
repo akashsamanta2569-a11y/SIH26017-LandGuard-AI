@@ -138,10 +138,10 @@ const KPICard: React.FC<{ card: KPICardData; index: number }> = ({ card, index }
           ? `1px solid ${card.borderColor}`
           : "1px solid rgba(148,163,184,0.08)",
         boxShadow: hovered
-          ? `0 0 32px rgba(16,185,129,0.18),
-             0 16px 32px -8px ${card.glowColor},
-             0 4px 14px rgba(0,0,0,0.55)`
-          : "0 4px 16px -2px rgba(0,0,0,0.45)",
+          ? `0 0 40px rgba(16,185,129,0.28),
+     0 18px 36px -8px ${card.glowColor},
+     0 8px 24px rgba(0,0,0,0.60)`
+          : `0 4px 16px rgba(0,0,0,0.45)`,
         transform: hovered ? "scale(1.025) translateY(-4px)" : "scale(1) translateY(0)",
       }}
       className="relative flex flex-col justify-between rounded-[20px] p-[18px] transition-all duration-300 ease-out cursor-default overflow-hidden group select-none"

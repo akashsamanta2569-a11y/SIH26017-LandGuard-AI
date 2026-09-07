@@ -9,6 +9,7 @@ import PredictionHistory from "../pages/PredictionHistory";
 import GisMap from "../pages/GisMap";
 import Projects from "../pages/Projects";
 import Prediction from "../pages/Prediction";
+import Settings from "../pages/Settings";
 
 export default function AppRouter() {
   return (
@@ -23,6 +24,7 @@ export default function AppRouter() {
           <Route path="/prediction-history" element={<PredictionHistory />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

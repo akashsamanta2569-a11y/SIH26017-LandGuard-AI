@@ -307,10 +307,36 @@ export default function Prediction() {
           />
 
           {isScanning && (
-            <DetectionProgress
-              isRunning={isScanning}
-              onComplete={handleDetectionComplete}
-            />
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-950/80 p-5 shadow-[0_0_30px_rgba(16,185,129,0.18)] backdrop-blur-xl">
+
+              {/* Background Glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-cyan-500/5" />
+
+              {/* Moving Scan Line */}
+              <div className="absolute left-0 right-0 top-0 h-1 animate-[scan-line_2s_linear_infinite] bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-80" />
+
+              <div className="relative z-10 mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-emerald-400">
+                    AI Detection Engine
+                  </p>
+
+                  <h3 className="mt-1 text-lg font-bold text-white">
+                    Analyzing Sentinel-2 Satellite Imagery...
+                  </h3>
+                </div>
+
+                <div className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1">
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                  <span className="text-xs font-medium text-emerald-300">LIVE SCAN</span>
+                </div>
+              </div>
+
+              <DetectionProgress
+                isRunning={isScanning}
+                onComplete={handleDetectionComplete}
+              />
+            </div>
           )}
         </div>
 

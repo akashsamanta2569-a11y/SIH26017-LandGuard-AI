@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Radar,
@@ -244,7 +244,23 @@ export default function Dashboard() {
   const [selectedSeverity, setSelectedSeverity] = useState<string>("All");
   const [exportSuccess, setExportSuccess] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState("");
 
+  useEffect(() => {
+    const updateClock = () => {
+      setCurrentTime(
+        new Date().toLocaleString("en-IN", {
+          dateStyle: "medium",
+          timeStyle: "medium",
+        })
+      );
+    };
+
+    updateClock();
+    const timer = setInterval(updateClock, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   // Filter alerts by severity
   const filteredAlerts = mockAlerts.filter((alert) => {
     if (selectedSeverity === "All") return true;
@@ -312,7 +328,12 @@ export default function Dashboard() {
                 ORBIT CYCLE: S2-B PASS 48
               </span>
             </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
 
+              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-cyan-300 font-mono">
+                {currentTime}
+              </span>
+            </div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white flex items-center gap-3">
               <span>LandGuard AI Command Center</span>
             </h1>
@@ -580,11 +601,10 @@ export default function Dashboard() {
                   key={sev}
                   type="button"
                   onClick={() => setSelectedSeverity(sev)}
-                  className={`px-2.5 py-1 rounded-md font-medium transition-all ${
-                    selectedSeverity === sev
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                      : "text-slate-400 hover:text-slate-200"
-                  }`}
+                  className={`px-2.5 py-1 rounded-md font-medium transition-all ${selectedSeverity === sev
+                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                    : "text-slate-400 hover:text-slate-200"
+                    }`}
                 >
                   {sev}
                 </button>
@@ -614,13 +634,12 @@ export default function Dashboard() {
                           )}`}
                         >
                           <span
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              alert.severity === "Critical"
-                                ? "bg-rose-400 animate-pulse"
-                                : alert.severity === "High"
+                            className={`w-1.5 h-1.5 rounded-full ${alert.severity === "Critical"
+                              ? "bg-rose-400 animate-pulse"
+                              : alert.severity === "High"
                                 ? "bg-amber-400"
                                 : "bg-yellow-400"
-                            }`}
+                              }`}
                           />
                           {alert.severity}
                         </span>
@@ -727,13 +746,12 @@ export default function Dashboard() {
 
                       <div className="text-right">
                         <span
-                          className={`font-mono font-bold text-sm ${
-                            isCritical
-                              ? "text-rose-400"
-                              : isHigh
+                          className={`font-mono font-bold text-sm ${isCritical
+                            ? "text-rose-400"
+                            : isHigh
                               ? "text-amber-400"
                               : "text-emerald-400"
-                          }`}
+                            }`}
                         >
                           {district.riskScore} / 100
                         </span>
@@ -746,13 +764,12 @@ export default function Dashboard() {
                     {/* Progress Bar */}
                     <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-800">
                       <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isCritical
-                            ? "bg-gradient-to-r from-amber-500 via-rose-500 to-rose-600"
-                            : isHigh
+                        className={`h-full rounded-full transition-all duration-500 ${isCritical
+                          ? "bg-gradient-to-r from-amber-500 via-rose-500 to-rose-600"
+                          : isHigh
                             ? "bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500"
                             : "bg-gradient-to-r from-emerald-500 to-teal-500"
-                        }`}
+                          }`}
                         style={{ width: `${district.riskScore}%` }}
                       />
                     </div>

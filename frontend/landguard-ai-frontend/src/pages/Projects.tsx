@@ -45,52 +45,68 @@ const PROJECTS = [
 ];
 
 export default function Projects() {
-  const navigate = useNavigate(); // ✅ Hook must be inside component
+  const navigate = useNavigate();
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen pb-10 text-slate-100 space-y-8">
       <PageHeader
-        title="Projects"
-        subtitle="Land monitoring projects managed by departments across West Bengal"
+        title="Land Monitoring Projects"
+        subtitle="Active AI surveillance projects across West Bengal."
       />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
         {PROJECTS.map((project) => (
           <div
             key={project.id}
-            className="overflow-hidden rounded-3xl border border-emerald-500/20 bg-slate-950/70"
+            className="group rounded-3xl border border-emerald-500/20 bg-slate-900/70 backdrop-blur-xl overflow-hidden shadow-lg hover:border-emerald-400/60 transition-all duration-300"
           >
             <img
               src={project.image}
               alt={project.name}
-              className="h-48 w-full object-cover"
+              className="h-48 w-full object-cover group-hover:scale-105 transition duration-500"
             />
 
-            <div className="space-y-4 p-5">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white">
-                  {project.name}
-                </h2>
+            <div className="p-5 space-y-4">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-lg font-bold">{project.name}</h2>
+                  <p className="text-emerald-400 text-sm">
+                    {project.district}
+                  </p>
+                </div>
 
-                <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs text-red-400">
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${project.risk === "Critical"
+                      ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                      : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                    }`}
+                >
                   {project.risk}
                 </span>
               </div>
 
-              <p className="text-sm text-slate-400">{project.agency}</p>
+              <div className="space-y-2 text-sm text-slate-300">
+                <div className="flex justify-between">
+                  <span>Agency</span>
+                  <span>{project.agency}</span>
+                </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm text-slate-300">
-                <div>District: {project.district}</div>
-                <div>Area: {project.area}</div>
-                <div>Progress: {project.progress}%</div>
-                <div>ID: {project.id}</div>
-              </div>
+                <div className="flex justify-between">
+                  <span>Affected Area</span>
+                  <span>{project.area}</span>
+                </div>
 
-              <div className="h-2 rounded-full bg-slate-800">
-                <div
-                  className="h-2 rounded-full bg-emerald-400"
-                  style={{ width: `${project.progress}%` }}
-                />
+                <div className="flex justify-between">
+                  <span>Progress</span>
+                  <span>{project.progress}%</span>
+                </div>
+
+                <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
+                    style={{ width: `${project.progress}%` }}
+                  />
+                </div>
               </div>
 
               <button
@@ -102,9 +118,9 @@ export default function Projects() {
                     },
                   })
                 }
-                className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-black transition hover:bg-emerald-400"
+                className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-3 font-semibold text-slate-950 hover:brightness-110 transition"
               >
-                View on GIS Map →
+                Open GIS Workspace
               </button>
             </div>
           </div>
