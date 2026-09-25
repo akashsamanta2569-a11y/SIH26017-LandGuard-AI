@@ -30,12 +30,17 @@ export default function DetectionMetrics({
 }: DetectionMetricsProps) {
   // Animation multiplier from 0.0 to 1.0 over 1 second when completed === true
   const [animProgress, setAnimProgress] = useState<number>(completed ? 1 : 0);
+  const [prevCompleted, setPrevCompleted] = useState(completed);
 
-  useEffect(() => {
+  if (completed !== prevCompleted) {
+    setPrevCompleted(completed);
     if (!completed) {
       setAnimProgress(0);
-      return;
     }
+  }
+
+  useEffect(() => {
+    if (!completed) return;
 
     const duration = 1000; // 1 second animation
     const startTime = performance.now();

@@ -77,8 +77,8 @@ export default function Projects() {
 
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-semibold ${project.risk === "Critical"
-                      ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                      : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+                    ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                    : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
                     }`}
                 >
                   {project.risk}
@@ -110,8 +110,16 @@ export default function Projects() {
               </div>
 
               <button
+                // onClick={() =>
+                //   navigate("/gis", {
+                //     state: {
+                //       district: project.district,
+                //       fromProjects: true,
+                //     },
+                //   })
+                // }
                 onClick={() =>
-                  navigate("/gis", {
+                  navigate("/prediction", {
                     state: {
                       district: project.district,
                       fromProjects: true,

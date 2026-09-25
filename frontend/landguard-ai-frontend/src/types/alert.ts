@@ -7,4 +7,6 @@ export interface AlertItem {
   affectedArea: number;
   timestamp: string;
   status: "NEW" | "ACTIVE";
+  severity?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  priority?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
 }

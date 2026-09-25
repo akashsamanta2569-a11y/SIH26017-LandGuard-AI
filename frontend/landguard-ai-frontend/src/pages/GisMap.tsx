@@ -1,62 +1,102 @@
-import GISHero from "../components/gis/GISHero";
+import { useState, useEffect } from "react";
+import GISHeroNew from "../components/gis/GISHeroNew";
 import GISMapCanvas from "../components/gis/GISMapCanvas";
 import LayerControlPanel from "../components/gis/LayerControlPanel";
 import DistrictInspector from "../components/gis/DistrictInspector";
 import TimelineComparison from "../components/gis/TimelineComparison";
+import SHAPInsightPanel from "../components/gis/SHAPInsightPanel";
+import AIRecommendationPanel from "../components/gis/AIRecommendationPanel";
+import GISExportPanel from "../components/gis/GISExportPanel";
 
 export default function GisMap() {
-  
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    return (localStorage.getItem("landguard-theme") as "dark" | "light") ?? "light";
+  });
+  const [selectedDistrict, setSelectedDistrict] = useState("All 23 Districts");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Sync theme with root document so CSS variables apply globally
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "light") {
+      root.classList.add("theme-light");
+      root.classList.remove("theme-dark");
+    } else {
+      root.classList.add("theme-dark");
+      root.classList.remove("theme-light");
+    }
+    localStorage.setItem("landguard-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () =>
+    setTheme((t) => (t === "dark" ? "light" : "dark"));
+
   return (
-    <div className="relative w-full max-w-screen-2xl mx-auto px-4 lg:px-6 space-y-6 pb-12 fade-up select-none">
-      {/* ── Background: Two Radial Emerald Glows + One Teal Glow ── */}
-      <div
-        className="pointer-events-none absolute -top-12 left-1/4 w-[650px] h-[650px] rounded-full opacity-20 -z-10"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(16,185,129,0.35) 0%, rgba(16,185,129,0.08) 50%, transparent 70%)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute top-72 right-12 w-[550px] h-[550px] rounded-full opacity-18 -z-10"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(20,184,166,0.3) 0%, rgba(20,184,166,0.06) 50%, transparent 70%)",
-        }}
-      />
-      <div
-        className="pointer-events-none absolute bottom-16 left-10 w-[500px] h-[500px] rounded-full opacity-15 -z-10"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(16,185,129,0.25) 0%, transparent 70%)",
-        }}
+    <div className="relative w-full max-w-[1720px] mx-auto space-y-6 pb-12 transition-colors duration-200">
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 1 + 2: Minimal Government Header & 6 KPI Cards
+      ══════════════════════════════════════════════════════════ */}
+      <GISHeroNew
+        theme={theme}
+        onThemeToggle={toggleTheme}
+        selectedDistrict={selectedDistrict}
+        onDistrictChange={setSelectedDistrict}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
-      {/* ── 1. Full-Width GISHero Toolbar ── */}
-      <div className="w-full">
-        <GISHero />
-      </div>
-
-      {/* ── 2. Responsive 12-Column Workstation Grid ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* LEFT COLUMN: LayerControlPanel */}
-        <div className="order-2 lg:col-span-3 w-full min-w-0">
-          <LayerControlPanel />
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 3: Main Content (70% Large GIS Map + 30% Right-side District Inspector)
+      ══════════════════════════════════════════════════════════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* 70% Leaflet GIS Map */}
+        <div className="lg:col-span-8 w-full min-w-0">
+          <GISMapCanvas theme={theme} />
         </div>
 
-        {/* CENTER COLUMN: GIS Map Canvas */}
-        <div className="order-1 lg:col-span-6 w-full min-w-0 flex flex-col h-full">
-          <GISMapCanvas />
-        </div>
-
-        {/* RIGHT COLUMN: DistrictInspector */}
-        <div className="order-3 lg:col-span-3 w-full min-w-0">
-          <DistrictInspector />
+        {/* 30% District Intelligence Sidebar Inspector */}
+        <div className="lg:col-span-4 w-full min-w-0">
+          <DistrictInspector
+            districtName={selectedDistrict === "All 23 Districts" ? "North 24 Parganas" : selectedDistrict}
+            theme={theme}
+          />
         </div>
       </div>
 
-      {/* ── 3. Full-Width Satellite Timeline Comparison ── */}
-      <div className="w-full -mt-2 lg:mt-0">
-        <TimelineComparison />
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 4: Layer Control (Simple Checkbox Panel)
+      ══════════════════════════════════════════════════════════ */}
+      <div>
+        <LayerControlPanel theme={theme} />
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 5: Timeline Comparison (Before/After Satellite Slider)
+      ══════════════════════════════════════════════════════════ */}
+      <div>
+        <TimelineComparison theme={theme} />
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 6 + 7: SHAP Explainability & AI Recommendation Cards
+      ══════════════════════════════════════════════════════════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Section 6: SHAP Feature Importance Chart (5 cols) */}
+        <div className="lg:col-span-5">
+          <SHAPInsightPanel theme={theme} />
+        </div>
+
+        {/* Section 7: AI Recommendation Cards (7 cols: High / Medium / Monitoring) */}
+        <div className="lg:col-span-7">
+          <AIRecommendationPanel theme={theme} />
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════
+          SECTION 8: Export Panel (PDF, CSV, GeoJSON, Share)
+      ══════════════════════════════════════════════════════════ */}
+      <div>
+        <GISExportPanel theme={theme} />
       </div>
     </div>
   );

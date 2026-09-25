@@ -2,7 +2,7 @@ import json
 import csv
 from pathlib import Path
 
-from geoalchemy2.shape import from_shape
+# from geoalchemy2.shape import from_shape
 from shapely.geometry import shape
 
 from app.core.database import SessionLocal

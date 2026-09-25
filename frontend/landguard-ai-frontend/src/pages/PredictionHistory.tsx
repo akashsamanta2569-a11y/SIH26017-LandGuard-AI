@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import type { HistoryItem } from "../types/history";
@@ -82,24 +82,30 @@ const defaultHistory: HistoryItem[] = [
     { district: "Paschim Bardhaman", date: "1 Sept 2026", threat: "Mining Expansion" },
 ];
 
+const DEFAULT_DETECTION = {
+    district: "Howrah",
+    confidence: 94,
+    vegetationLoss: -12.8,
+    affectedArea: 18.6,
+    riskScore: 91,
+};
+
 export default function PredictionHistory() {
     const location = useLocation();
 
     // Read incoming detection data from navigation state
-    const detection = (location.state as {
-        district: string;
-        imageUrl?: string;
-        confidence: number;
-        vegetationLoss: number;
-        affectedArea: number;
-        riskScore: number;
-    }) ?? {
-        district: "Howrah",
-        confidence: 94,
-        vegetationLoss: -12.8,
-        affectedArea: 18.6,
-        riskScore: 91,
-    };
+    const detection = useMemo(() => {
+        return (
+            (location.state as {
+                district: string;
+                imageUrl?: string;
+                confidence: number;
+                vegetationLoss: number;
+                affectedArea: number;
+                riskScore: number;
+            }) ?? DEFAULT_DETECTION
+        );
+    }, [location.state]);
 
     const [toast, setToast] = useState("");
 
@@ -151,12 +157,14 @@ export default function PredictionHistory() {
     const [selectedHistory, setSelectedHistory] = useState<HistoryItem>(
         displayList[0]
     );
+    const [prevDisplayList, setPrevDisplayList] = useState(displayList);
 
-    useEffect(() => {
+    if (displayList !== prevDisplayList) {
+        setPrevDisplayList(displayList);
         if (displayList.length > 0) {
             setSelectedHistory(displayList[0]);
         }
-    }, [displayList]);
+    }
 
     const selectedImages = getDistrictMockData(selectedHistory.district);
 

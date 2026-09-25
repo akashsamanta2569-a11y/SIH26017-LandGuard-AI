@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAlerts } from "../utils/alertStore";
 import {
@@ -309,7 +309,39 @@ export default function Alerts() {
   const navigate = useNavigate();
 
   // React state for filtering and interactivity
-  const [alerts, setAlerts] = useState<AlertData[]>(MOCK_ALERTS);
+  const [alerts, setAlerts] = useState<AlertData[]>(() => {
+    const liveAlerts = getAlerts();
+    if (!liveAlerts.length) return MOCK_ALERTS;
+
+    const existing = new Set(MOCK_ALERTS.map((item) => item.id));
+    const formatted: AlertData[] = liveAlerts
+      .filter((a) => !existing.has(a.id))
+      .map((a) => ({
+        id: a.id,
+        district: a.district,
+        threatTitle: `${a.district} Encroachment Detected`,
+        severity: "Critical",
+        confidence: Number(a.confidence),
+        timestamp: a.timestamp,
+        affectedArea: `${Number(a.affectedArea).toFixed(1)} Ha`,
+        satelliteSource: "Sentinel-2 MSI",
+        shortSummary:
+          "AI detected vegetation loss and cadastral encroachment from latest satellite scan.",
+        coordinates: "22.58°N, 88.32°E",
+        plotDetails: "Auto-generated from AI Detection",
+        assignedOfficer: {
+          name: "Forest Patrol Unit",
+          rank: "Range Officer",
+          division: "West Bengal Forest Department",
+          phone: "+91 XXXXX XXXXX",
+        },
+        status: "Awaiting Beat Allocation",
+        aiRecommendation:
+          "Dispatch field patrol and verify encroachment using cadastral overlay.",
+      }));
+
+    return [...formatted, ...MOCK_ALERTS];
+  });
   const [filter, setFilter] = useState<FilterType>("All");
   const [expandedAlertId, setExpandedAlertId] = useState<string | null>("ALT-WB-101");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -320,46 +352,6 @@ export default function Alerts() {
       setToastMessage(null);
     }, 3500);
   };
-  useEffect(() => {
-    const liveAlerts = getAlerts();
-
-    if (!liveAlerts.length) return;
-
-    setAlerts((prev) => {
-      const existing = new Set(prev.map((item) => item.id));
-
-      const formatted: AlertData[] = liveAlerts
-        .filter((a) => !existing.has(a.id))
-        .map((a) => ({
-          id: a.id,
-          district: a.district,
-          threatTitle: `${a.district} Encroachment Detected`,
-          severity: "Critical",
-          confidence: Number(a.confidence),
-          timestamp: a.timestamp,
-          affectedArea: `${Number(a.affectedArea).toFixed(1)} Ha`,
-          satelliteSource: "Sentinel-2 MSI",
-          shortSummary:
-            "AI detected vegetation loss and cadastral encroachment from latest satellite scan.",
-          coordinates: "22.58°N, 88.32°E",
-          plotDetails: "Auto-generated from AI Detection",
-
-          assignedOfficer: {
-            name: "Forest Patrol Unit",
-            rank: "Range Officer",
-            division: "West Bengal Forest Department",
-            phone: "+91 XXXXX XXXXX",
-          },
-
-          status: "Awaiting Beat Allocation",
-
-          aiRecommendation:
-            "Dispatch field patrol and verify encroachment using cadastral overlay.",
-        }));
-
-      return [...formatted, ...prev];
-    });
-  }, []);
   // KPI Calculations
   const activeAlertsCount = useMemo(
     () => alerts.filter((a) => a.severity !== "Resolved").length,

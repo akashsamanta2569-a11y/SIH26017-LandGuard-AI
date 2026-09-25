@@ -234,9 +234,8 @@ export default function DetectionViewer({
 
       {/* 5. Completed State: 5 Overlay Detection Regions with Military Targeting UI */}
       <div
-        className={`pointer-events-none absolute inset-0 z-20 transition-opacity duration-700 ease-out ${
-          completed ? "opacity-100" : "opacity-0"
-        }`}
+        className={`pointer-events-none absolute inset-0 z-20 transition-opacity duration-700 ease-out ${completed ? "opacity-100" : "opacity-0"
+          }`}
       >
         {DETECTION_REGIONS.map((region) => (
           <div

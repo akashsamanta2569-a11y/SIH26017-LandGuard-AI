@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -598,8 +598,17 @@ export default function Heatmap() {
   const [selectedRiskFilter, setSelectedRiskFilter] = useState<
     "All" | RiskLevel
   >("All");
-  const [selectedDistrictId, setSelectedDistrictId] =
-    useState<string>("kolkata");
+  const [selectedDistrictId, setSelectedDistrictId] = useState<string>(() =>
+    incomingAlert?.fromAlerts && incomingAlert.district ? incomingAlert.district : "kolkata"
+  );
+  const [prevAlert, setPrevAlert] = useState(incomingAlert);
+
+  if (incomingAlert !== prevAlert) {
+    setPrevAlert(incomingAlert);
+    if (incomingAlert?.fromAlerts && incomingAlert.district) {
+      setSelectedDistrictId(incomingAlert.district);
+    }
+  }
   const [hoveredDistrictId, setHoveredDistrictId] = useState<string | null>(
     null
   );
@@ -607,12 +616,6 @@ export default function Heatmap() {
   const [showRivers, setShowRivers] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [actionToast, setActionToast] = useState<string | null>(null);
-useEffect(() => {
-  if (!incomingAlert?.fromAlerts || !incomingAlert.district) return;
-
-  // Focus the district coming from Alerts page.
-  setSelectedDistrictId(incomingAlert.district);
-}, [incomingAlert]);
   // SVG ref
   const svgContainerRef = useRef<HTMLDivElement>(null);
 
