@@ -10,11 +10,13 @@ import GisMap from "../pages/GisMap";
 import Projects from "../pages/Projects";
 import Prediction from "../pages/Prediction";
 import Settings from "../pages/Settings";
+import { SkeletonShowcase } from "../components/skeletons";
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/skeletons" element={<SkeletonShowcase />} />
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/gis" element={<GisMap />} />

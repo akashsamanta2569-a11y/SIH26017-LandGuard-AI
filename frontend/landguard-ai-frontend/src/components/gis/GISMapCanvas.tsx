@@ -8,6 +8,15 @@ import {
   ReloadOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
+import {
+  SatelliteScanOverlay,
+  DistrictPulse,
+  HeatmapLegend,
+  MiniMapNavigator,
+  ReplayScanner,
+  REPLAY_STAGES,
+  type ReplayStage,
+} from "./index";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -452,14 +461,29 @@ const DISTRICT_LINES = [
 
 interface GISMapCanvasProps {
   theme?: "dark" | "light";
+  selectedDistrict?: string;
+  onSelectDistrict?: (district: string) => void;
 }
 
-export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
+export default function GISMapCanvas({
+  theme = "light",
+  selectedDistrict,
+  onSelectDistrict,
+}: GISMapCanvasProps) {
   const isDark = theme === "dark";
   const [selectedId, setSelectedId] = useState<string | null>("mk1");
   const [hoveredMarker, setHoveredMarker] = useState<MapMarker | null>(null);
   const [zoom, setZoom] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
+
+  // GIS Replay & Tactical Overlays
+  const [showReplay, setShowReplay] = useState(false);
+  const [replayStage, setReplayStage] = useState<ReplayStage>(REPLAY_STAGES[0]);
+  const [replayStageIndex, setReplayStageIndex] = useState(0);
+  const [showScanner, setShowScanner] = useState(true);
+  const [showPulse, setShowPulse] = useState(true);
+  const [showMiniMap, setShowMiniMap] = useState(true);
+  const [showLegend, setShowLegend] = useState(false);
 
   // 4 Raster heat overlay layers
   const [layers, setLayers] = useState({
@@ -600,7 +624,75 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
         >
           ● Temporal Change
         </button>
+
+        {/* GIS Tactical & Replay Controls */}
+        <div className="ml-auto flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowReplay((prev) => !prev)}
+            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${
+              showReplay
+                ? "bg-[#00F5C3]/20 text-[#00F5C3] border-[#00F5C3]/60 shadow-[0_0_12px_rgba(0,245,195,0.3)]"
+                : "bg-slate-800 text-slate-300 border-slate-700 hover:text-white"
+            }`}
+          >
+            <span>▶ Temporal Replay (Jun → Sep 2026)</span>
+            {showReplay && <span className="h-1.5 w-1.5 rounded-full bg-[#00F5C3] animate-ping" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowScanner((prev) => !prev)}
+            className={`px-2 py-1 rounded-md text-[11px] font-medium border transition-colors cursor-pointer ${
+              showScanner ? "bg-teal-500/20 text-teal-300 border-teal-500/40" : "bg-slate-800/40 text-slate-400 border-slate-700"
+            }`}
+            title="Toggle Sentinel-2 Scan Beam"
+          >
+            Scan Beam
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowPulse((prev) => !prev)}
+            className={`px-2 py-1 rounded-md text-[11px] font-medium border transition-colors cursor-pointer ${
+              showPulse ? "bg-rose-500/20 text-rose-300 border-rose-500/40" : "bg-slate-800/40 text-slate-400 border-slate-700"
+            }`}
+            title="Toggle Critical District Pulse Rings"
+          >
+            District Pulse
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowMiniMap((prev) => !prev)}
+            className={`hidden sm:inline-block px-2 py-1 rounded-md text-[11px] font-medium border transition-colors cursor-pointer ${
+              showMiniMap ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" : "bg-slate-800/40 text-slate-400 border-slate-700"
+            }`}
+            title="Toggle WB Minimap Navigator"
+          >
+            Minimap
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowLegend((prev) => !prev)}
+            className={`px-2 py-1 rounded-md text-[11px] font-medium border transition-colors cursor-pointer ${
+              showLegend ? "bg-amber-500/20 text-amber-300 border-amber-500/40" : "bg-slate-800/40 text-slate-400 border-slate-700"
+            }`}
+            title="Toggle Heatmap Risk Legend"
+          >
+            Legend
+          </button>
+        </div>
       </div>
+
+      {/* Replay Multi-Temporal Progression Scanner */}
+      {showReplay && (
+        <div className="p-3 bg-[#050C18]/95 border-b border-[#00F5C3]/30">
+          <ReplayScanner
+            onStageChange={(stage, index) => {
+              setReplayStage(stage);
+              setReplayStageIndex(index);
+            }}
+          />
+        </div>
+      )}
 
       {/* ── Main Map Canvas Viewport ── */}
       <div
@@ -754,7 +846,11 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
           )}
 
           {layers.ndvi && (
-            <g clipPath="url(#wbClip)">
+            <g
+              clipPath="url(#wbClip)"
+              opacity={showReplay ? replayStage.ndviOpacity : 1}
+              style={{ transition: "opacity 0.6s ease-in-out" }}
+            >
               <circle cx={185} cy={334} r={75} fill="url(#ndviLossGrad)" />
               <circle cx={92} cy={123} r={55} fill="url(#ndviLossGrad)" />
               <circle cx={64} cy={211} r={60} fill="url(#ndviLossGrad)" />
@@ -779,8 +875,14 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
             </g>
           )}
 
-          {/* ── Detection Polygons ── */}
+          {/* ── Detection Polygons with Replay Expansion ── */}
           {DETECTION_POLYGONS.map((poly) => {
+            const isIllegal = poly.category === "Illegal Structure";
+            if (showReplay && isIllegal && replayStageIndex === 0) {
+              return null; // Baseline June 2026: no illegal structures detected yet
+            }
+
+            const scale = showReplay && isIllegal ? replayStage.polygonScale : 1;
             const strokeCol =
               poly.severity === "critical"
                 ? "#DC2626"
@@ -789,10 +891,10 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
                 : "#0F766E";
             const fillCol =
               poly.severity === "critical"
-                ? "rgba(220, 38, 38, 0.2)"
+                ? `rgba(220, 38, 38, ${showReplay ? 0.25 * scale : 0.2})`
                 : poly.severity === "high"
-                ? "rgba(217, 119, 6, 0.2)"
-                : "rgba(15, 118, 110, 0.2)";
+                ? `rgba(217, 119, 6, ${showReplay ? 0.25 * scale : 0.2})`
+                : `rgba(15, 118, 110, ${showReplay ? 0.25 * scale : 0.2})`;
 
             return (
               <polygon
@@ -800,11 +902,44 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
                 points={poly.points}
                 fill={fillCol}
                 stroke={strokeCol}
-                strokeWidth={1.2}
+                strokeWidth={showReplay && isIllegal ? 1.5 * scale : 1.2}
                 strokeDasharray="3 1.5"
+                style={{
+                  transformOrigin: "center center",
+                  transform: showReplay && isIllegal ? `scale(${0.7 + 0.3 * scale})` : undefined,
+                  transition: "all 0.5s ease-out",
+                }}
               />
             );
           })}
+
+          {/* Expanding Illegal Construction Structures during Replay */}
+          {showReplay && replayStageIndex >= 1 && (
+            <g className="transition-all duration-500">
+              <rect
+                x={146 - 6 * replayStage.polygonScale}
+                y={348 - 5 * replayStage.polygonScale}
+                width={14 * replayStage.polygonScale}
+                height={10 * replayStage.polygonScale}
+                fill="#DC2626"
+                fillOpacity={0.7}
+                stroke="#FF4D6D"
+                strokeWidth={1.2}
+                className={replayStageIndex === 3 ? "animate-pulse" : ""}
+              />
+              <rect
+                x={210 - 7 * replayStage.polygonScale}
+                y={180 - 5 * replayStage.polygonScale}
+                width={16 * replayStage.polygonScale}
+                height={11 * replayStage.polygonScale}
+                fill="#DC2626"
+                fillOpacity={0.7}
+                stroke="#FF4D6D"
+                strokeWidth={1.2}
+                className={replayStageIndex === 3 ? "animate-pulse" : ""}
+              />
+            </g>
+          )}
 
           {/* ── 18 Anomaly Marker Pins ── */}
           {MARKERS.map((m) => {
@@ -859,6 +994,28 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
             );
           })}
         </svg>
+
+        {/* Sentinel-2 Laser Scan Beam Overlay — Always above map canvas */}
+        {(showReplay || showScanner) && (
+          <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
+            <SatelliteScanOverlay
+              label="Sentinel-2 MSI"
+              sublabel={showReplay ? `${replayStage.month} • ${replayStage.label}` : "10m GSD • LIVE SCAN"}
+            />
+          </div>
+        )}
+
+        {/* Critical District Pulse Rings with Tooltips */}
+        {showPulse && (
+          <div className="absolute inset-0 z-30 pointer-events-none">
+            <DistrictPulse
+              activeDistrictId={selectedDistrict || selected?.district}
+              onSelectDistrict={(dist) => {
+                if (onSelectDistrict) onSelectDistrict(dist.name);
+              }}
+            />
+          </div>
+        )}
 
         {/* ── Active Intelligence Tooltip (Material-3 Card) ── */}
         {activeTooltip && (
@@ -918,20 +1075,20 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
             <div className="mt-3 flex items-center justify-between text-xs">
               <span className="text-slate-500 font-medium">AI Inferred Confidence</span>
               <span className="font-bold text-teal-700 dark:text-teal-400">
-                {activeTooltip.confidence}%
+                {showReplay ? replayStage.confidence : activeTooltip.confidence}%
               </span>
             </div>
             <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 mt-1 overflow-hidden">
               <div
                 className="h-full rounded-full bg-teal-600 transition-all duration-300"
-                style={{ width: `${activeTooltip.confidence}%` }}
+                style={{ width: `${showReplay ? replayStage.confidence : activeTooltip.confidence}%` }}
               />
             </div>
           </div>
         )}
 
         {/* ── Zoom & Reset Controls ── */}
-        <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-1.5">
+        <div className="absolute top-4 right-4 z-20 flex flex-col gap-1.5">
           <button
             type="button"
             onClick={() => setZoom((z) => Math.min(z + 0.25, 2.2))}
@@ -961,10 +1118,34 @@ export default function GISMapCanvas({ theme = "light" }: GISMapCanvasProps) {
           </button>
         </div>
 
-        {/* ── Coordinate HUD Badge in Bottom Left ── */}
+        {/* ── Floating MiniMap Navigator in Bottom Right ── */}
+        {showMiniMap && (
+          <div className="absolute bottom-4 right-4 z-30 pointer-events-auto shadow-2xl">
+            <MiniMapNavigator
+              currentDistrict={selectedDistrict || selected?.district || "Howrah"}
+              onSelectDistrict={(name) => {
+                if (onSelectDistrict) onSelectDistrict(name);
+              }}
+            />
+          </div>
+        )}
+
+        {/* ── Heatmap Legend in Bottom Left ── */}
+        {showLegend && (
+          <div className="absolute bottom-14 left-4 z-30 pointer-events-auto max-w-xs">
+            <HeatmapLegend showNdvi={layers.ndvi} />
+          </div>
+        )}
+
+        {/* ── Coordinate & Timeline HUD Badge in Bottom Left ── */}
         <div className="absolute bottom-4 left-4 z-20 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 text-[11px] font-mono shadow-sm flex items-center gap-2 select-none">
-          <span className="w-2 h-2 rounded-full bg-teal-600" />
+          <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse" />
           <span className="text-slate-700 dark:text-slate-300">
+            {showReplay ? (
+              <span className="text-cyan-600 dark:text-cyan-400 font-bold mr-1">
+                [{replayStage.month} &bull; {replayStage.label}]
+              </span>
+            ) : null}
             {activeTooltip
               ? `${activeTooltip.lat.toFixed(4)}°N, ${activeTooltip.lon.toFixed(4)}°E · ${activeTooltip.district}`
               : "22.5726°N, 88.3639°E · West Bengal State"}

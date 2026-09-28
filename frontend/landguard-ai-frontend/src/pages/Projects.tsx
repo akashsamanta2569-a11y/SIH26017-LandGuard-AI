@@ -48,7 +48,10 @@ export default function Projects() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen pb-10 text-slate-100 space-y-8">
+    <div
+      id="landguard-report"
+      className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black pb-10 space-y-8 overflow-x-hidden w-full max-w-full"
+    >
       <PageHeader
         title="Land Monitoring Projects"
         subtitle="Active AI surveillance projects across West Bengal."

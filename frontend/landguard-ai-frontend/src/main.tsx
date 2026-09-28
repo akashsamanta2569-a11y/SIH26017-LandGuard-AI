@@ -5,6 +5,7 @@ import { ConfigProvider } from "antd";
 
 import App from "./App";
 import "./index.css";
+import "./styles/print.css";
 import { antdTheme } from "./styles/theme";
 
 const queryClient = new QueryClient({

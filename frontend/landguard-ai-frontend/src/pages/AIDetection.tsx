@@ -37,7 +37,10 @@ export default function AIDetection() {
   };
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-6 py-6">
+    <div
+      id="landguard-report"
+      className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black w-full max-w-[1600px] mx-auto px-6 py-6"
+    >
       <h1 className="text-4xl font-black text-emerald-400 mb-6">
         AI Detection Command Center
       </h1>

@@ -11,6 +11,7 @@ import {
   Database,
   Shield,
 } from "lucide-react";
+import { usePrintReport } from "../../hooks/usePrintReport";
 
 interface ExportOption {
   id: string;
@@ -90,6 +91,7 @@ interface GISExportPanelProps {
 }
 
 export default function GISExportPanel({ theme = "dark" }: GISExportPanelProps) {
+  const exportPDF = usePrintReport();
   const [exporting, setExporting] = useState<string | null>(null);
   const [done, setDone] = useState<string[]>([]);
 
@@ -104,6 +106,9 @@ export default function GISExportPanel({ theme = "dark" }: GISExportPanelProps) 
   const handleExport = (id: string) => {
     if (exporting || done.includes(id)) return;
     setExporting(id);
+    if (id === "pdf") {
+      exportPDF();
+    }
     setTimeout(() => {
       setExporting(null);
       setDone((prev) => [...prev, id]);
@@ -174,7 +179,7 @@ export default function GISExportPanel({ theme = "dark" }: GISExportPanelProps) 
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.06 }}
-              onClick={() => handleExport(opt.id)}
+              onClick={opt.id === "pdf" ? exportPDF : () => handleExport(opt.id)}
               disabled={!!exporting}
               className="group flex flex-col gap-2.5 p-4 rounded-xl border text-left transition-all duration-200 disabled:opacity-60"
               style={{

@@ -10,6 +10,7 @@ import {
   Globe,
   Lock,
 } from "lucide-react";
+import { usePrintReport } from "../../hooks/usePrintReport";
 
 export interface ExportReportPanelProps {
   district: string;
@@ -31,6 +32,7 @@ export default function ExportReportPanel({
   theme = "dark",
 }: ExportReportPanelProps) {
   const [copied, setCopied] = useState(false);
+  const exportPDF = usePrintReport();
 
   const isDark = theme === "dark";
   const bgCard = isDark ? "rgba(10,18,28,0.92)" : "rgba(255,255,255,0.95)";
@@ -91,7 +93,7 @@ export default function ExportReportPanel({
       a.click();
       URL.revokeObjectURL(url);
     } else if (format === "pdf") {
-      window.print();
+      exportPDF();
     }
   };
 
@@ -134,7 +136,7 @@ export default function ExportReportPanel({
         <button
           type="button"
           disabled={!completed}
-          onClick={() => handleExportFile("pdf")}
+          onClick={exportPDF}
           className="p-3.5 rounded-2xl border text-left transition-all duration-200 group disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
             background: boxBg,

@@ -32,7 +32,10 @@ export default function GisMap() {
     setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   return (
-    <div className="relative w-full max-w-[1720px] mx-auto space-y-6 pb-12 transition-colors duration-200">
+    <div
+      id="landguard-report"
+      className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black relative w-full max-w-[1720px] mx-auto space-y-6 pb-12 transition-colors duration-200"
+    >
       {/* ══════════════════════════════════════════════════════════
           SECTION 1 + 2: Minimal Government Header & 6 KPI Cards
       ══════════════════════════════════════════════════════════ */}
@@ -51,7 +54,11 @@ export default function GisMap() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* 70% Leaflet GIS Map */}
         <div className="lg:col-span-8 w-full min-w-0">
-          <GISMapCanvas theme={theme} />
+          <GISMapCanvas
+            theme={theme}
+            selectedDistrict={selectedDistrict}
+            onSelectDistrict={setSelectedDistrict}
+          />
         </div>
 
         {/* 30% District Intelligence Sidebar Inspector */}

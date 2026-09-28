@@ -164,7 +164,10 @@ export default function Prediction() {
   };
 
   return (
-    <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div
+      id="landguard-report"
+      className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6"
+    >
       {/* 1. Command Center Hero Banner */}
       <DetectionHero
         theme={theme}

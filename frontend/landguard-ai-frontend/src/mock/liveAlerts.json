@@ -1,0 +1,139 @@
+[
+  {
+    "id": "ALT-WB-9018",
+    "district": "South 24 Parganas",
+    "severity": "Critical",
+    "title": "Mangrove Canopy Clearing & Commercial Aquaculture Bunding",
+    "description": "AI detected vegetation loss and illegal aquaculture bund construction inside protected mangrove buffer zone.",
+    "confidence": 94.2,
+    "affectedArea": 6.2,
+    "vegetationLoss": 18.6,
+    "coordinates": {
+      "lat": 22.164,
+      "lng": 88.812
+    },
+    "mouza": "Gosaba IX",
+    "jlNumber": "42",
+    "sensor": "Sentinel-2 MSI",
+    "status": "Pending Field Verification",
+    "rfctlarr": [
+      "Section 11 Notification",
+      "Section 19 Compensation Pending",
+      "Section 31 Rehabilitation Required"
+    ],
+    "cadastreMatch": 96.3,
+    "officer": "Forest Ranger - South 24 Parganas",
+    "timestamp": "2026-09-26T20:22:32+05:30",
+    "beforeImage": "/images/history/gosaba-before.jpg",
+    "afterImage": "/images/history/gosaba-after.jpg"
+  },
+  {
+    "id": "ALT-WB-9015",
+    "district": "Paschim Bardhaman",
+    "severity": "Critical",
+    "title": "Unauthorized Open-Cast Coal Boundary Earthmoving",
+    "description": "Heavy excavation detected outside sanctioned coal lease boundary near Raniganj mining belt.",
+    "confidence": 96.8,
+    "affectedArea": 4.8,
+    "vegetationLoss": 21.4,
+    "coordinates": {
+      "lat": 23.674,
+      "lng": 87.118
+    },
+    "mouza": "Raniganj North",
+    "jlNumber": "18",
+    "sensor": "Sentinel-2B MSI",
+    "status": "Drone Verification Scheduled",
+    "rfctlarr": [
+      "Section 4 Investigation",
+      "Forest Conservation Act",
+      "Mining Boundary Verification"
+    ],
+    "cadastreMatch": 98.1,
+    "officer": "Mining Surveillance Unit",
+    "timestamp": "2026-09-26T20:10:00+05:30",
+    "beforeImage": "/images/history/mining-before.jpg",
+    "afterImage": "/images/history/mining-after.jpg"
+  },
+  {
+    "id": "ALT-WB-9011",
+    "district": "Howrah",
+    "severity": "High",
+    "title": "River Corridor Encroachment Near Smart City Corridor",
+    "description": "New permanent structures detected within protected transport corridor boundary.",
+    "confidence": 91.5,
+    "affectedArea": 18.6,
+    "vegetationLoss": 12.8,
+    "coordinates": {
+      "lat": 22.595,
+      "lng": 88.263
+    },
+    "mouza": "Howrah Municipal Zone",
+    "jlNumber": "73",
+    "sensor": "Cartosat-3 PAN",
+    "status": "DM Notice Pending",
+    "rfctlarr": [
+      "Section 11 Gazette Verified",
+      "Section 16 Land Measurement Pending"
+    ],
+    "cadastreMatch": 93.8,
+    "officer": "Howrah LAO Division",
+    "timestamp": "2026-09-26T19:48:12+05:30",
+    "beforeImage": "/images/history/howrah-before.jpg",
+    "afterImage": "/images/history/howrah-after.jpg"
+  },
+  {
+    "id": "ALT-WB-9008",
+    "district": "Purba Medinipur",
+    "severity": "High",
+    "title": "Dune Levelling & Unauthorized Resort Foundation",
+    "description": "Casuarina shelterbelt removal detected within 200m coastal regulation zone.",
+    "confidence": 89.7,
+    "affectedArea": 3.1,
+    "vegetationLoss": 15.3,
+    "coordinates": {
+      "lat": 21.658,
+      "lng": 87.718
+    },
+    "mouza": "Mandarmani Coastal Belt",
+    "jlNumber": "91",
+    "sensor": "Landsat-9 OLI-2",
+    "status": "Pending Coastal Survey",
+    "rfctlarr": [
+      "CRZ Buffer Violation",
+      "Section 31 Rehabilitation Check"
+    ],
+    "cadastreMatch": 90.6,
+    "officer": "Coastal Protection Unit",
+    "timestamp": "2026-09-26T18:38:40+05:30",
+    "beforeImage": "/images/history/mandarmani-before.jpg",
+    "afterImage": "/images/history/mandarmani-after.jpg"
+  },
+  {
+    "id": "ALT-WB-9004",
+    "district": "Darjeeling",
+    "severity": "Medium",
+    "title": "Teak & Sal Timber Logging in Senchal Buffer",
+    "description": "NDVI drop greater than 35% indicates selective commercial logging activity.",
+    "confidence": 88.3,
+    "affectedArea": 2.4,
+    "vegetationLoss": 35.0,
+    "coordinates": {
+      "lat": 27.041,
+      "lng": 88.241
+    },
+    "mouza": "Senchal Wildlife Sanctuary",
+    "jlNumber": "09",
+    "sensor": "Sentinel-2A L2A",
+    "status": "Field Inspection Initiated",
+    "rfctlarr": [
+      "Forest Conservation Review",
+      "Wildlife Buffer Protection"
+    ],
+    "cadastreMatch": 87.2,
+    "officer": "Darjeeling Forest Division",
+    "timestamp": "2026-09-26T17:15:00+05:30",
+    "beforeImage": "/images/history/senchal-before.jpg",
+    "afterImage": "/images/history/senchal-after.jpg"
+  }
+]

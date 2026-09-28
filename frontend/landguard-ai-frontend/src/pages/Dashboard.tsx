@@ -42,6 +42,8 @@ import RiskProgressCard from "../components/dashboard/RiskProgressCard";
 import AlertPreviewCard from "../components/dashboard/AlertPreviewCard";
 import ModelHealthCard from "../components/dashboard/ModelHealthCard";
 import { RecommendationCard, LifecycleTracker } from "../components/dashboard/RecommendationCard";
+import { ApiHealthPanel } from "../components/system";
+import { usePrintReport } from "../hooks/usePrintReport";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -357,6 +359,7 @@ export default function Dashboard() {
   const [selectedDistrict] = useState("All 23 Districts");
   const [exportSuccess, setExportSuccess] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const exportPDF = usePrintReport();
 
   // Live clock
   useEffect(() => {
@@ -386,13 +389,15 @@ export default function Dashboard() {
     localStorage.setItem("landguard-theme", theme);
   }, [theme]);
 
-  const handleExportReport = () => {
+  const handleExportReport = async () => {
     setIsExporting(true);
-    setTimeout(() => {
-      setIsExporting(false);
+    try {
+      await exportPDF();
       setExportSuccess(true);
       setTimeout(() => setExportSuccess(false), 4000);
-    }, 1200);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const BADGES = [
@@ -499,7 +504,10 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen pb-14 space-y-6 text-[var(--text)]">
+    <div
+      id="landguard-report"
+      className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black pb-14 space-y-6 overflow-x-hidden w-full max-w-full"
+    >
 
       {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 1 — HERO HEADER
@@ -625,6 +633,11 @@ export default function Dashboard() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
+          MISSION CONTROL — SYSTEM HEALTH CENTER (GOVERNMENT SURVEILLANCE SLA)
+      ═══════════════════════════════════════════════════════════════════════ */}
+      <ApiHealthPanel />
+
+      {/* ═══════════════════════════════════════════════════════════════════════
           SECTION 3 — WEST BENGAL RISK OVERVIEW + SECTION 4 LIVE ALERTS
       ═══════════════════════════════════════════════════════════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -638,7 +651,7 @@ export default function Dashboard() {
             title="West Bengal Risk Overview"
             subtitle="District-level risk distribution across 23 zones"
           />
-          <div className="flex gap-4 items-start">
+          <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
             <div className="shrink-0 w-28">
               <WBMiniMap />
             </div>
@@ -715,7 +728,7 @@ export default function Dashboard() {
             title="AI Model & System Status"
             subtitle="Real-time health of all AI inference and GIS pipeline components"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {MODEL_STATUS.map((m, i) => (
               <ModelHealthCard
                 key={m.name}
@@ -730,7 +743,7 @@ export default function Dashboard() {
           </div>
 
           {/* Quick Actions row */}
-          <div className="pt-4 border-t border-[var(--border)] grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="pt-4 border-t border-[var(--border)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {[
               { label: "Run AI Detection", icon: Play, color: "emerald", path: "/prediction" },
               { label: "GIS Heatmap", icon: Layers, color: "cyan", path: "/heatmap" },
@@ -782,7 +795,7 @@ export default function Dashboard() {
             subtitle="Acquisition stage completion across 142 active projects"
           />
           <LifecycleTracker steps={rfctlarrSteps} />
-          <div className="pt-3 border-t border-[var(--border)] grid grid-cols-3 gap-3 text-center">
+          <div className="pt-3 border-t border-[var(--border)] grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
             {[
               { label: "Completed Stages", value: "2/5", color: "text-emerald-400" },
               { label: "Avg Completion", value: "50.8%", color: "text-cyan-400" },
@@ -908,7 +921,7 @@ export default function Dashboard() {
           subtitle="LandGuard AI — SIH26017 Prototype · Ministry of Rural Development"
         />
 
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {[
             { layer: "Frontend", stack: "React 19 + Vite", detail: "TypeScript · Tailwind CSS v4 · Framer Motion", icon: Globe, color: "emerald" },
             { layer: "Backend", stack: "FastAPI 0.141", detail: "Python 3.13 · Uvicorn · Pydantic v2", icon: Zap, color: "blue" },

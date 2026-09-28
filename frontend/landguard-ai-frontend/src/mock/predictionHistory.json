@@ -1,0 +1,46 @@
+[
+  {
+    "month": "Jun2026",
+    "label": "Baseline Pass",
+    "beforeImage": "/images/history/howrah-before.jpg",
+    "afterImage": "/images/history/howrah-before.jpg",
+    "canopyLoss": 0,
+    "builtArea": 0,
+    "plots": 0,
+    "confidence": 78,
+    "ndviOpacity": 1
+  },
+  {
+    "month": "Jul2026",
+    "label": "Early Clearing",
+    "beforeImage": "/images/history/howrah-before.jpg",
+    "afterImage": "/images/history/howrah-july.jpg",
+    "canopyLoss": 8.4,
+    "builtArea": 1800,
+    "plots": 2,
+    "confidence": 84,
+    "ndviOpacity": 0.75
+  },
+  {
+    "month": "Aug2026",
+    "label": "Foundation Phase",
+    "beforeImage": "/images/history/howrah-before.jpg",
+    "afterImage": "/images/history/howrah-aug.jpg",
+    "canopyLoss": 15.9,
+    "builtArea": 6200,
+    "plots": 5,
+    "confidence": 91,
+    "ndviOpacity": 0.45
+  },
+  {
+    "month": "Sep2026",
+    "label": "Active Encroachment",
+    "beforeImage": "/images/history/howrah-before.jpg",
+    "afterImage": "/images/history/howrah-after.jpg",
+    "canopyLoss": 24.8,
+    "builtArea": 14200,
+    "plots": 8,
+    "confidence": 96.4,
+    "ndviOpacity": 0.15
+  }
+]

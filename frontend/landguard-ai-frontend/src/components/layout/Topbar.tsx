@@ -6,13 +6,17 @@ import {
   GlobalOutlined,
 } from "@ant-design/icons";
 
-export default function Topbar() {
+interface TopbarProps {
+  onOpenCommandPalette?: () => void;
+}
+
+export default function Topbar({ onOpenCommandPalette }: TopbarProps = {}) {
   const [searchFocused, setSearchFocused] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
   return (
     <header
-      className="shrink-0 flex items-center justify-between gap-4 sticky top-0 z-20 px-6 py-3 border-b transition-colors duration-200"
+      className="hidden md:flex shrink-0 items-center justify-between gap-4 sticky top-0 z-20 px-6 py-3 border-b transition-colors duration-200 print:hidden"
       style={{
         backgroundColor: "var(--bg-card)",
         borderColor: "var(--border-color)",
@@ -42,14 +46,23 @@ export default function Topbar() {
             backgroundColor: "var(--bg-card-subtle)",
             borderColor: searchFocused ? "#0F766E" : "var(--border-color)",
           }}
-          onClick={() => searchRef.current?.focus()}
+          onClick={() => {
+            if (onOpenCommandPalette) {
+              onOpenCommandPalette();
+            } else {
+              searchRef.current?.focus();
+            }
+          }}
         >
           <SearchOutlined style={{ color: searchFocused ? "#0F766E" : "#64748B" }} />
           <input
             ref={searchRef}
             type="text"
-            placeholder="Search Project, Cadastre Plot, or District..."
-            onFocus={() => setSearchFocused(true)}
+            placeholder="Search Project, Cadastre Plot, or District... (Ctrl + K)"
+            onFocus={() => {
+              if (onOpenCommandPalette) onOpenCommandPalette();
+              setSearchFocused(true);
+            }}
             onBlur={() => setSearchFocused(false)}
             className="flex-1 bg-transparent border-none outline-none text-xs min-w-0"
             style={{ color: "var(--text-primary)" }}

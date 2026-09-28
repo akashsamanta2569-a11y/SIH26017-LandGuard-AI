@@ -1,0 +1,54 @@
+{
+  "updated": "26 Sep 2026 20:47 IST",
+  "overallHealth": 98,
+  "services": [
+    {
+      "id": "sentinel",
+      "name": "Sentinel-2 MSI Feed",
+      "status": "ONLINE",
+      "latency": 120,
+      "uptime": 99.98,
+      "color": "green"
+    },
+    {
+      "id": "cartosat",
+      "name": "ISRO Cartosat-3 Feed",
+      "status": "ONLINE",
+      "latency": 154,
+      "uptime": 99.91,
+      "color": "cyan"
+    },
+    {
+      "id": "mongodb",
+      "name": "MongoDB Atlas",
+      "status": "ONLINE",
+      "latency": 34,
+      "uptime": 100,
+      "color": "green"
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI Intelligence Engine",
+      "status": "ONLINE",
+      "latency": 49,
+      "uptime": 99.93,
+      "color": "green"
+    },
+    {
+      "id": "yolo",
+      "name": "YOLOv8 Detection Engine",
+      "status": "PROCESSING",
+      "latency": 83,
+      "uptime": 98.6,
+      "color": "yellow"
+    },
+    {
+      "id": "cadastre",
+      "name": "DLR/LRO Cadastre API",
+      "status": "SYNCING",
+      "latency": 210,
+      "uptime": 97.4,
+      "color": "orange"
+    }
+  ]
+}

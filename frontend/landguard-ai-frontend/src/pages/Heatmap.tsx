@@ -21,7 +21,18 @@ import {
   Eye,
   SlidersHorizontal,
   Compass,
+  PlayCircle,
 } from "lucide-react";
+
+import {
+  SatelliteScanOverlay,
+  DistrictPulse,
+  HeatmapLegend,
+  MiniMapNavigator,
+  ReplayScanner,
+  REPLAY_STAGES,
+  type ReplayStage,
+} from "../components/gis";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -614,6 +625,12 @@ export default function Heatmap() {
   );
   const [showLabels, setShowLabels] = useState(true);
   const [showRivers, setShowRivers] = useState(true);
+  const [showReplay, setShowReplay] = useState(false);
+  const [replayStage, setReplayStage] = useState<ReplayStage>(REPLAY_STAGES[0]);
+  const [replayStageIndex, setReplayStageIndex] = useState(0);
+  const [showScanner, setShowScanner] = useState(true);
+  const [showPulse, setShowPulse] = useState(true);
+  const [showMiniMap, setShowMiniMap] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [actionToast, setActionToast] = useState<string | null>(null);
   // SVG ref
@@ -697,7 +714,10 @@ export default function Heatmap() {
   };
 
   return (
-    <div className="relative w-full space-y-6 pb-12 fade-up select-none">
+    <div
+      id="landguard-report"
+      className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black relative w-full space-y-6 pb-12 fade-up select-none"
+    >
       {/* ── Background Atmospheric Emerald Radiance ── */}
       <div
         className="pointer-events-none absolute -top-16 left-1/4 w-[600px] h-[600px] rounded-full opacity-20 -z-10 blur-3xl"
@@ -993,6 +1013,11 @@ export default function Heatmap() {
                 )}
               </div>
             </div>
+
+            {/* Heatmap Threat & NDVI Legend */}
+            <div className="pt-2">
+              <HeatmapLegend showNdvi={true} showCadastre={true} />
+            </div>
           </div>
         </div>
 
@@ -1014,7 +1039,43 @@ export default function Heatmap() {
               </div>
 
               {/* Viewport Control Buttons */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <button
+                  onClick={() => setShowReplay(!showReplay)}
+                  className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition flex items-center gap-1.5 ${showReplay
+                    ? "bg-[#00F5C3]/20 border-[#00F5C3]/50 text-[#00F5C3] shadow-[0_0_10px_rgba(0,245,195,0.3)]"
+                    : "bg-[#070b13] border-gray-800 text-gray-400 hover:text-white"
+                    }`}
+                  title="Toggle GIS Multi-Temporal Replay"
+                >
+                  <PlayCircle className="w-3.5 h-3.5" />
+                  <span>Replay: {showReplay ? "ON" : "OFF"}</span>
+                </button>
+
+                <button
+                  onClick={() => setShowScanner(!showScanner)}
+                  className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition flex items-center gap-1.5 ${showScanner
+                    ? "bg-[#00E5FF]/20 border-[#00E5FF]/50 text-[#00E5FF] shadow-[0_0_10px_rgba(0,229,255,0.3)]"
+                    : "bg-[#070b13] border-gray-800 text-gray-400 hover:text-white"
+                    }`}
+                  title="Toggle Satellite Laser Scanner"
+                >
+                  <Radio className="w-3.5 h-3.5" />
+                  <span>Scanner: {showScanner ? "ON" : "OFF"}</span>
+                </button>
+
+                <button
+                  onClick={() => setShowPulse(!showPulse)}
+                  className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition flex items-center gap-1.5 ${showPulse
+                    ? "bg-[#FF4D6D]/20 border-[#FF4D6D]/50 text-[#FF4D6D] shadow-[0_0_10px_rgba(255,77,109,0.3)]"
+                    : "bg-[#070b13] border-gray-800 text-gray-400 hover:text-white"
+                    }`}
+                  title="Toggle Critical District Pulse"
+                >
+                  <Activity className="w-3.5 h-3.5" />
+                  <span>Pulse: {showPulse ? "ON" : "OFF"}</span>
+                </button>
+
                 <button
                   onClick={() => setShowLabels(!showLabels)}
                   className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition ${showLabels
@@ -1035,6 +1096,18 @@ export default function Heatmap() {
                   title="Toggle Hooghly River Channel"
                 >
                   River: {showRivers ? "ON" : "OFF"}
+                </button>
+
+                <button
+                  onClick={() => setShowMiniMap(!showMiniMap)}
+                  className={`px-2.5 py-1 text-xs font-mono rounded-lg border transition flex items-center gap-1.5 ${showMiniMap
+                    ? "bg-[#00F5C3]/20 border-[#00F5C3]/50 text-[#00F5C3]"
+                    : "bg-[#070b13] border-gray-800 text-gray-400 hover:text-white"
+                    }`}
+                  title="Toggle West Bengal MiniMap Navigator"
+                >
+                  <Compass className="w-3.5 h-3.5" />
+                  <span>MiniMap: {showMiniMap ? "ON" : "OFF"}</span>
                 </button>
 
                 <div className="h-4 w-px bg-gray-800 mx-1" />
@@ -1065,6 +1138,18 @@ export default function Heatmap() {
               </div>
             </div>
 
+            {/* Replay Multi-Temporal Progression Engine */}
+            {showReplay && (
+              <div className="mt-3">
+                <ReplayScanner
+                  onStageChange={(stage, index) => {
+                    setReplayStage(stage);
+                    setReplayStageIndex(index);
+                  }}
+                />
+              </div>
+            )}
+
             {/* SVG MAP CONTAINER */}
             <div
               ref={svgContainerRef}
@@ -1079,6 +1164,24 @@ export default function Heatmap() {
                   backgroundSize: "32px 32px",
                 }}
               />
+
+              {/* Feature 2: Satellite Laser Scanner */}
+              {showScanner && (
+                <SatelliteScanOverlay
+                  label="Sentinel-2 MSI"
+                  sublabel="10m GSD • LIVE SCAN"
+                />
+              )}
+
+              {/* Feature 3: Live District Pulse for Critical Districts */}
+              {showPulse && (
+                <DistrictPulse
+                  activeDistrictId={selectedDistrictId}
+                  onSelectDistrict={(district) => {
+                    setSelectedDistrictId(district.id);
+                  }}
+                />
+              )}
 
               {/* Tactical compass indicator */}
               <div className="absolute top-3 right-3 pointer-events-none flex flex-col items-center gap-0.5 text-emerald-400/80 font-mono text-[10px] bg-[#090d16]/80 px-2 py-1.5 rounded-lg border border-emerald-500/20 backdrop-blur-sm">
@@ -1437,8 +1540,116 @@ export default function Heatmap() {
                       />
                     </g>
                   )}
+
+                  {/* FEATURE 1: GIS Replay Multi-Temporal Progression Overlay */}
+                  {showReplay && (
+                    <g pointerEvents="none">
+                      {/* Glowing Teal Timeline Path following coordinates */}
+                      <path
+                        d="M 162 408 L 254 504 L 330 485 L 332 590"
+                        fill="none"
+                        stroke="#00F5C3"
+                        strokeWidth="3"
+                        strokeDasharray="6 4"
+                        filter="drop-shadow(0 0 10px #00F5C3)"
+                      />
+
+                      {/* Stage indicator node */}
+                      <circle
+                        cx={
+                          replayStageIndex === 0
+                            ? 162
+                            : replayStageIndex === 1
+                              ? 254
+                              : replayStageIndex === 2
+                                ? 330
+                                : 332
+                        }
+                        cy={
+                          replayStageIndex === 0
+                            ? 408
+                            : replayStageIndex === 1
+                              ? 504
+                              : replayStageIndex === 2
+                                ? 485
+                                : 590
+                        }
+                        r="8"
+                        fill="#00F5C3"
+                        stroke="#FFFFFF"
+                        strokeWidth="2"
+                        className="animate-ping"
+                      />
+
+                      {/* Illegal structures appearing on Stage 2 & 3 */}
+                      {replayStageIndex >= 2 && (
+                        <g>
+                          <rect
+                            x="250"
+                            y="498"
+                            width="10"
+                            height="8"
+                            fill="#FF4D6D"
+                            stroke="#FFFFFF"
+                            strokeWidth="1.2"
+                            filter="drop-shadow(0 0 6px #FF4D6D)"
+                          />
+                          <rect
+                            x="324"
+                            y="478"
+                            width="12"
+                            height="9"
+                            fill="#FF4D6D"
+                            stroke="#FFFFFF"
+                            strokeWidth="1.2"
+                            filter="drop-shadow(0 0 6px #FF4D6D)"
+                          />
+                        </g>
+                      )}
+
+                      {/* Red encroachment polygons expanding on Stage 3 */}
+                      {replayStageIndex >= 3 && (
+                        <g>
+                          <polygon
+                            points="318,575 352,565 364,595 330,612"
+                            fill="rgba(255, 77, 109, 0.7)"
+                            stroke="#FF4D6D"
+                            strokeWidth="2"
+                            filter="drop-shadow(0 0 12px #FF4D6D)"
+                            className="animate-pulse"
+                          />
+                          <polygon
+                            points="148,398 180,392 188,418 154,424"
+                            fill="rgba(255, 77, 109, 0.7)"
+                            stroke="#FF4D6D"
+                            strokeWidth="2"
+                            filter="drop-shadow(0 0 12px #FF4D6D)"
+                            className="animate-pulse"
+                          />
+                        </g>
+                      )}
+                    </g>
+                  )}
                 </svg>
               </div>
+
+              {/* Feature 4: Floating MiniMap Navigator */}
+              {showMiniMap && (
+                <div className="hidden sm:block absolute bottom-12 right-3 z-30">
+                  <MiniMapNavigator
+                    currentDistrict={selectedDistrict.name}
+                    onSelectDistrict={(name) => {
+                      const matched = DISTRICTS_DATA.find((d) =>
+                        d.name.toLowerCase().includes(name.toLowerCase())
+                      );
+                      if (matched) {
+                        setSelectedDistrictId(matched.id);
+                        handleZoomIn();
+                      }
+                    }}
+                  />
+                </div>
+              )}
 
               {/* Bottom Map Status Bar */}
               <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-[10px] font-mono text-gray-400 pointer-events-none bg-[#090d16]/80 px-3 py-1.5 rounded-lg border border-gray-800/80 backdrop-blur-sm">
@@ -1453,6 +1664,14 @@ export default function Heatmap() {
                     {selectedDistrict.coordinates.lng.toFixed(2)}°E]
                   </span>
                 </div>
+                {showReplay && (
+                  <div className="hidden md:flex items-center gap-1.5 text-[10px] text-[#00F5C3]">
+                    <span className="font-bold">{replayStage.month}:</span>
+                    <span>NDVI {replayStage.ndviOpacity.toFixed(2)}</span>
+                    <span>•</span>
+                    <span>Conf {replayStage.confidence}%</span>
+                  </div>
+                )}
                 <div className="hidden sm:flex items-center gap-2">
                   <span>AI RISK:</span>
                   <span

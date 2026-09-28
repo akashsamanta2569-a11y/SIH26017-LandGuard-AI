@@ -14,7 +14,10 @@ export default function Settings() {
     const [autoSync, setAutoSync] = useState(true);
 
     return (
-        <div className="min-h-screen text-slate-100 space-y-8 pb-10">
+        <div
+            id="landguard-report"
+            className="min-h-screen bg-[#050C18] text-white print:bg-white print:text-black space-y-8 pb-10"
+        >
             {/* Header */}
             <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/40 p-8">
                 <div className="flex items-center gap-4">
