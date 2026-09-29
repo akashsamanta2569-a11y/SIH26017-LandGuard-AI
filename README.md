@@ -290,17 +290,6 @@ Make sure you have:
 
 ---
 
-## 1. Clone the Repository
-
-```bash
-git clone https://github.com/akashsamanta2569-a11y/SIH26017-LandGuard-AI.git
-cd SIH26017-LandGuard-AI
-```
-
-> Replace the repository URL above if your team uses a different GitHub repository.
-
----
-
 # 🖥️ Frontend Setup
 
 ```bash
@@ -399,10 +388,6 @@ Example:
 DATABASE_URL=postgresql://username:password@localhost:5432/landguard_ai
 ```
 
-> Never commit real database passwords, API keys, model credentials, or other secrets to GitHub.
-
----
-
 # 🔐 Environment Variables
 
 For local development, create the appropriate `.env` file required by your backend/frontend configuration.
@@ -486,28 +471,6 @@ Administrative Follow-up
 
 ---
 
-# 📸 Screenshots
-
-Add your final screenshots here after the UI is frozen:
-
-```text
-docs/screenshots/
-├── dashboard.png
-├── district-risk-map.png
-├── satellite-detection.png
-├── alerts.png
-├── prediction-history.png
-└── monitored-projects.png
-```
-
-Example:
-
-```markdown
-![LandGuard AI Dashboard](docs/screenshots/dashboard.png)
-```
-
----
-
 # 🎯 Expected Impact
 
 LandGuard AI is designed around a **predictive and evidence-driven monitoring approach**.
@@ -568,14 +531,12 @@ The system does not replace:
 
 | Member | Role |
 |---|---|
-| **[Team Member 1]** | Team Lead / AI-ML |
-| **[Team Member 2]** | Backend / Database |
-| **[Team Member 3]** | Frontend / UI |
-| **[Team Member 4]** | GIS / Research |
-| **[Team Member 5]** | GIS / Research |
-| **[Team Member 6]** | GIS / Research |
-
-> Replace the placeholders with your final team members and roles before publishing.
+| **[Akash Samanta]** | Team Lead / Backend & System Integration Lead|
+| **[Shavej Mondal]** | AI/ML / Explainable AI Engineer |
+| **[Dipankar Maiti]** | Frontend / Dashboard Engineer |
+| **[Soumyadip Ghosh]** | Data / Research Engineer |
+| **[Bipul Saha]** | GIS / Geospatial Engineer |
+| **[Shreya Dutta]** | Product / Testing & Presentation Lead |
 
 ---
 
